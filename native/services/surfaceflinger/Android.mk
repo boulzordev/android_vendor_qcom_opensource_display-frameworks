@@ -12,8 +12,8 @@ LOCAL_CFLAGS                    := -DLOG_TAG=\"ExSurfaceFlinger\"
 LOCAL_CFLAGS                    += -DHAS_CONTEXT_PRIORITY
 
 LOCAL_C_INCLUDES                += $(TARGET_OUT_HEADERS)
-LOCAL_C_INCLUDES                += hardware/qcom/display/libgralloc \
-                                   hardware/qcom/display/libqdutils \
+LOCAL_C_INCLUDES                += hardware/qcom/display-caf/$(TARGET_BOARD_PLATFORM)/libgralloc \
+                                   hardware/qcom/display-caf/$(TARGET_BOARD_PLATFORM)/libqdutils \
                                    frameworks/native/services/surfaceflinger
 
 LOCAL_SHARED_LIBRARIES          := libsurfaceflinger libui libgui libqdutils \
