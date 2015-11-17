@@ -29,6 +29,7 @@
 #include "ExSurfaceFlinger.h"
 #include "ExLayer.h"
 #include <cutils/properties.h>
+#include <exhwcomposer_defs.h>
 #define ATRACE_TAG ATRACE_TAG_GRAPHICS
 
 namespace android {
@@ -220,21 +221,10 @@ void ExSurfaceFlinger::setOrientationEventControl(bool& freezeSurfacePresent,
     HWComposer::LayerListIterator cur = hwc.begin(id);
 
     if(freezeSurfacePresent) {
-        /* If freezeSurfacePresent, set ANIMATING flag */
-        //TODO: Need to call this
-        //cur->setAnimating(true);
-    } else {
-        const KeyedVector<wp<IBinder>, DisplayDeviceState>&
-                draw(mDrawingState.displays);
-        size_t dc = draw.size();
-        for (size_t i=0 ; i<dc ; i++) {
-            if (draw[i].isMainDisplay()) {
-                /* Pass the current orientation to HWC */
-                /*hwc.eventControl(HWC_DISPLAY_PRIMARY,
-                                 SurfaceFlinger::EVENT_ORIENTATION,
-                                 uint32_t(draw[i].orientation));*/
-            }
-        }
+        /* If freezeSurfacePresent, set ANIMATING flag
+         * which is used to support disable animation on external
+         */
+        cur->setAnimating(true);
     }
 }
 
@@ -244,6 +234,18 @@ void ExSurfaceFlinger::updateVisibleRegionsDirty() {
      */
     if(isExtendedMode()) {
         mVisibleRegionsDirty = true;
+    }
+}
+
+void ExSurfaceFlinger::drawWormHoleIfRequired(HWComposer::LayerListIterator& cur,
+        const HWComposer::LayerListIterator& end,
+        const sp<const DisplayDevice>& hw,
+        const Region& region) {
+    if (cur != end) {
+        if (cur->getCompositionType() != HWC_BLIT)
+            drawWormhole(hw, region);
+    } else {
+           drawWormhole(hw, region);
     }
 }
 

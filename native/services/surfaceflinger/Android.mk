@@ -14,11 +14,18 @@ LOCAL_CFLAGS                    += -DHAS_CONTEXT_PRIORITY
 LOCAL_C_INCLUDES                += $(TARGET_OUT_HEADERS)
 LOCAL_C_INCLUDES                += hardware/qcom/display-caf/$(TARGET_BOARD_PLATFORM)/libgralloc \
                                    hardware/qcom/display-caf/$(TARGET_BOARD_PLATFORM)/libqdutils \
-                                   frameworks/native/services/surfaceflinger
+                                   frameworks/native/services/surfaceflinger \
+                                   vendor/qcom/opensource/display-frameworks/include
 
-LOCAL_SHARED_LIBRARIES          := libsurfaceflinger libui libgui libqdutils \
+
+LOCAL_SHARED_LIBRARIES          := libsurfaceflinger libui libgui \
                                    libbinder libutils libcutils \
                                    libandroid
+
+ifeq ($(TARGET_USES_QCOM_BSP), true)
+    LOCAL_CFLAGS                += -DQTI_BSP
+    LOCAL_SHARED_LIBRARIES      += libqdutils
+endif
 
 LOCAL_SRC_FILES                 := ExLayer.cpp \
                                    ExSurfaceFlinger.cpp \
